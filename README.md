@@ -11,6 +11,7 @@ A Python library that enhances pandas DataFrame merge operations by providing de
 - [Installation](#installation)
 - [Usage](#usage)
   - [Basic Usage](#basic-usage)
+  - [Example Output](#example-output)
   - [Custom Thresholds](#custom-thresholds)
   - [Error Handling](#error-handling)
 - [API Reference](#api-reference)
@@ -69,6 +70,31 @@ report = inspector.get_report()
 print("Merge Report:")
 for key, value in report.items():
     print(f"{key}: {value}")
+```
+
+## Example Output
+
+Here is an example of the merge report when running the MergeInspector on a large dataset containing hundreds of thousands of rows:
+
+```bash
+Merge Report:
+left_number_of_rows_before_merge: 300000
+right_number_of_rows_before_merge: 200000
+left_duplicated_keys_in_keys: {'number': 50000, 'percentage': 16.67, 'cases': [{'id': 12345}, {'id': 67890}, {'id': 54321}]}
+right_duplicated_keys_in_keys: {'number': 10000, 'percentage': 5.0, 'cases': [{'id': 22222}, {'id': 33333}, {'id': 44444}]}
+duplicated_keys_error: True
+left_null_keys_in_keys: {'number': 3000, 'percentage': 1.0, 'cases': [{'id': nan}, {'id': nan}, {'id': nan}]}
+right_null_keys_in_keys: {'number': 1000, 'percentage': 0.5, 'cases': [{'id': nan}, {'id': nan}, {'id': nan}]}
+null_keys_error: True
+number_of_rows_after_merge: 150000
+number_of_matched_keys: 140000
+percentage_of_matched_keys: 70.0
+number_of_left_keys_without_match: 160000
+number_of_right_keys_without_match: 60000
+percentage_of_matched_keys_error: True
+matched_keys_error: True
+number_of_rows_duplicated: 5000
+rows_duplicated_error: True
 ```
 
 ## Custom thresholds
