@@ -77,7 +77,6 @@ for key, value in report.items():
 Here is an example of the merge report when running the MergeInspector on a large dataset containing hundreds of thousands of rows:
 
 ```bash
-Merge Report:
 left_number_of_rows_before_merge: 300000
 right_number_of_rows_before_merge: 200000
 left_duplicated_keys_in_keys: {'number': 50000, 'percentage': 16.67, 'cases': [{'id': 12345}, {'id': 67890}, {'id': 54321}]}
@@ -96,6 +95,50 @@ matched_keys_error: True
 number_of_rows_duplicated: 5000
 rows_duplicated_error: True
 ```
+
+Merge Report Keys
+
+Below is a description of each key in the merge report:
+
+    left_number_of_rows_before_merge: The number of rows in the left DataFrame before the merge operation.
+
+    right_number_of_rows_before_merge: The number of rows in the right DataFrame before the merge operation.
+
+    left_duplicated_keys_in_keys: A dictionary containing:
+        number: The number of duplicated keys in the left DataFrame.
+        percentage: The percentage of duplicated keys in relation to the total number of unique keys.
+        cases: A sample of duplicated keys.
+
+    right_duplicated_keys_in_keys: A dictionary similar to the left but for the right DataFrame, showing duplicated keys in the right DataFrame.
+
+    duplicated_keys_error: A boolean that is True if the number of duplicated keys exceeds the set threshold.
+
+    left_null_keys_in_keys: A dictionary showing:
+        number: The number of null keys in the left DataFrame.
+        percentage: The percentage of null keys in relation to the total number of keys.
+        cases: A sample of rows with null keys.
+
+    right_null_keys_in_keys: Similar to left_null_keys_in_keys, but for the right DataFrame, showing rows with null keys.
+
+    null_keys_error: A boolean that is True if the number of null keys exceeds the set threshold.
+
+    number_of_rows_after_merge: The number of rows in the DataFrame after the merge operation.
+
+    number_of_matched_keys: The number of keys that matched between the left and right DataFrames during the merge.
+
+    percentage_of_matched_keys: The percentage of matched keys in relation to the total number of unique keys between both DataFrames.
+
+    number_of_left_keys_without_match: The number of keys that are present in the left DataFrame but have no match in the right DataFrame.
+
+    number_of_right_keys_without_match: The number of keys that are present in the right DataFrame but have no match in the left DataFrame.
+
+    percentage_of_matched_keys_error: A boolean that is True if the percentage of matched keys is lower than the set threshold.
+
+    matched_keys_error: A boolean that is True if there is a significant mismatch between the number of expected and actual matched keys.
+
+    number_of_rows_duplicated: The number of duplicated rows in the merged DataFrame after the merge operation.
+
+    rows_duplicated_error: A boolean that is True if the number of duplicated rows exceeds the set threshold.
 
 ## Custom thresholds
 
