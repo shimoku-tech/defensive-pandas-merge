@@ -2,7 +2,7 @@
 
 import pandas as pd
 import pytest
-from defensive_pandas_merge import DefensiveMerge, DefensiveMergeException
+from defensive_pandas_merge.merge_inspector import MergeInspector, MergeInspectorException
 
 def test_defensive_merge_error_handling():
     """
