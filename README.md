@@ -38,7 +38,7 @@ pip install defensive-pandas-merge
 
 ```python
 import pandas as pd
-from defensive_pandas_merge import DefensiveMerge
+from defensive_pandas_merge.merge_inspector import MergeInspector
 
 # Sample DataFrames
 df_customers = pd.DataFrame({
@@ -51,8 +51,8 @@ df_orders = pd.DataFrame({
     'loyalty_member': ['L001', 'L002', 'L005']
 })
 
-# Initialize the DefensiveMerge
-inspector = DefensiveMerge(
+# Initialize the MergeInspector
+inspector = MergeInspector(
     df_left=df_customers,
     df_right=df_orders,
     how='inner',
@@ -81,7 +81,7 @@ error_thresholds = {
     'rows_duplicated': 1             # Error if more than 1% rows are duplicated
 }
 
-inspector = DefensiveMerge(
+inspector = MergeInspector(
     df_left=df_customers,
     df_right=df_orders,
     error_thresholds=error_thresholds,
@@ -93,11 +93,11 @@ inspector = DefensiveMerge(
 ## Error handling
 
 ```python
-from defensive_pandas_merge import DefensiveMergeException
+from defensive_pandas_merge.merge_inspector import MergeInspectorException
 
 raise_on_errors = ['rows_duplicated_error', 'matched_keys_error']
 
-inspector = DefensiveMerge(
+inspector = MergeInspector(
     df_left=df_customers,
     df_right=df_orders,
     raise_on_errors=raise_on_errors,
@@ -107,7 +107,7 @@ inspector = DefensiveMerge(
 
 try:
     df_merged = inspector.perform_merge()
-except DefensiveMergeException as e:
+except MergeInspectorException as e:
     print(f"Merge failed due to errors:\n{e}")
     # Access the full report if needed
     report = e.report
@@ -118,8 +118,10 @@ else:
 
 ## API Reference
 
+MergeInspector
+
 ```python
-DefensiveMerge(
+MergeInspector(
     df_left,
     df_right,
     error_thresholds=None,
@@ -139,7 +141,7 @@ Methods
     perform_merge(): Performs the merge and analyzes the result.
     get_report(): Returns a dictionary containing the merge report.
 
-DefensiveMergeException
+MergeInspectorException
 
 Custom exception raised when specified errors are detected during the merge.
 Attributes
