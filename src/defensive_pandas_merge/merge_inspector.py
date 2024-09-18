@@ -25,7 +25,7 @@ class MergeInspector:
         self.raise_on_errors = raise_on_errors or []
         self.report = {}
         self._perform_checks()
-    
+
     def _perform_checks(self):
         """
         Performs initial checks on the DataFrames before merging.
@@ -63,8 +63,10 @@ class MergeInspector:
         left_total_keys = df_left_no_nulls[left_on].drop_duplicates().shape[0]
         right_total_keys = df_right_no_nulls[right_on].drop_duplicates().shape[0]
 
-        left_duplicate_keys_percentage = round((left_duplicate_keys.shape[0] / left_total_keys) * 100, 4) if left_total_keys else 0
-        right_duplicate_keys_percentage = round((right_duplicate_keys.shape[0] / right_total_keys) * 100, 4) if right_total_keys else 0
+        left_duplicate_keys_percentage = round((left_duplicate_keys.shape[0] / left_total_keys) * 100,
+                                               4) if left_total_keys else 0
+        right_duplicate_keys_percentage = round((right_duplicate_keys.shape[0] / right_total_keys) * 100,
+                                                4) if right_total_keys else 0
 
         self.report['left_duplicated_keys_in_keys'] = {
             'number': left_duplicate_keys.shape[0],
@@ -79,8 +81,8 @@ class MergeInspector:
 
         # Error flag for duplicated keys with threshold
         self.report['duplicated_keys_error'] = (
-            left_duplicate_keys_percentage > self.error_thresholds.get('duplicated_keys', 0) and
-            right_duplicate_keys_percentage > self.error_thresholds.get('duplicated_keys', 0)
+                left_duplicate_keys_percentage > self.error_thresholds.get('duplicated_keys', 0) and
+                right_duplicate_keys_percentage > self.error_thresholds.get('duplicated_keys', 0)
         )
 
         # Check for nulls in merge keys and collect sample cases
@@ -93,7 +95,8 @@ class MergeInspector:
 
         # Calculate percentage of null keys based on total number of rows
         left_null_keys_percentage = round((left_null_rows / self.report['left_number_of_rows_before_merge']) * 100, 4)
-        right_null_keys_percentage = round((right_null_rows / self.report['right_number_of_rows_before_merge']) * 100, 4)
+        right_null_keys_percentage = round((right_null_rows / self.report['right_number_of_rows_before_merge']) * 100,
+                                           4)
 
         self.report['left_null_keys_in_keys'] = {
             'number': left_null_rows,
@@ -108,8 +111,8 @@ class MergeInspector:
 
         # Error flag for null keys with threshold (using 'or' as per your requirement)
         self.report['null_keys_error'] = (
-            left_null_keys_percentage > self.error_thresholds.get('null_keys', 0) or
-            right_null_keys_percentage > self.error_thresholds.get('null_keys', 0)
+                left_null_keys_percentage > self.error_thresholds.get('null_keys', 0) or
+                right_null_keys_percentage > self.error_thresholds.get('null_keys', 0)
         )
 
     def perform_merge(self):
@@ -156,12 +159,22 @@ class MergeInspector:
         self.report['number_of_matched_keys'] = matched_keys_count
         self.report['percentage_of_matched_keys'] = percentage_matched_keys
 
-        self.report['number_of_left_keys_without_match'] = (keys_merged['_merge'] == 'left_only').sum()
-        self.report['number_of_right_keys_without_match'] = (keys_merged['_merge'] == 'right_only').sum()
+        # Updated to include example cases
+        left_keys_without_match = keys_merged[keys_merged['_merge'] == 'left_only']
+        right_keys_without_match = keys_merged[keys_merged['_merge'] == 'right_only']
+
+        self.report['number_of_left_keys_without_match'] = {
+            'number': left_keys_without_match.shape[0],
+            'cases': left_keys_without_match[self.left_on].head(3).to_dict('records')
+        }
+        self.report['number_of_right_keys_without_match'] = {
+            'number': right_keys_without_match.shape[0],
+            'cases': right_keys_without_match[self.right_on].head(3).to_dict('records')
+        }
 
         # Error flag for percentage of matched keys with threshold
         self.report['percentage_of_matched_keys_error'] = (
-            percentage_matched_keys < self.error_thresholds.get('percentage_matched_keys', 100)
+                percentage_matched_keys < self.error_thresholds.get('percentage_matched_keys', 100)
         )
 
         # Error flag for matched keys (maintaining consistency with previous 'matched_keys_error' field)
@@ -178,7 +191,7 @@ class MergeInspector:
 
         # Error flag for duplicated rows with threshold
         self.report['rows_duplicated_error'] = (
-            duplicated_rows_percentage > self.error_thresholds.get('rows_duplicated', 0)
+                duplicated_rows_percentage > self.error_thresholds.get('rows_duplicated', 0)
         )
 
     def _check_for_errors(self):
@@ -190,10 +203,10 @@ class MergeInspector:
         if errors_triggered:
             error_messages = [f"{error} is True" for error in errors_triggered]
             full_message = (
-                "Errors detected during merge analysis:\n" +
-                "; ".join(error_messages) +
-                "\n\nFull Report:\n" +
-                "\n".join([f"{key}: {value}" for key, value in self.report.items()])
+                    "Errors detected during merge analysis:\n" +
+                    "; ".join(error_messages) +
+                    "\n\nFull Report:\n" +
+                    "\n".join([f"{key}: {value}" for key, value in self.report.items()])
             )
             raise MergeInspectorException(full_message, self.report)
 
@@ -203,7 +216,8 @@ class MergeInspector:
         """
         how = self.merge_kwargs.get('how', 'inner')
         if how == 'inner':
-            return min(self.report['left_number_of_rows_before_merge'], self.report['right_number_of_rows_before_merge'])
+            return min(self.report['left_number_of_rows_before_merge'],
+                       self.report['right_number_of_rows_before_merge'])
         elif how == 'left':
             return self.report['left_number_of_rows_before_merge']
         elif how == 'right':
